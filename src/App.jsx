@@ -3,10 +3,19 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 
 // Role Definitions
 export const ROLES = {
-  CITIZEN: 'CITIZEN',
   TALUK_OFFICER: 'TALUK_OFFICER',
   PANCHAYAT_OFFICER: 'PANCHAYAT_OFFICER',
+  CITIZEN: 'CITIZEN',
 };
+
+// Registered Government Official Database for Verification
+const OFFICIAL_USERS = [
+  { identifier: 'TLK101', password: 'admin123', role: ROLES.TALUK_OFFICER, name: 'Taluk Executive Officer' },
+  { identifier: 'TLK102', password: 'admin123', role: ROLES.TALUK_OFFICER, name: 'Sub-Collector / Taluk Head' },
+  { identifier: 'PNC201', password: 'panchayat123', role: ROLES.PANCHAYAT_OFFICER, name: 'Sivakasi Panchayat Officer' },
+  { identifier: 'PNC202', password: 'panchayat123', role: ROLES.PANCHAYAT_OFFICER, name: 'Sattur Panchayat Officer' },
+  { identifier: 'citizen@gmail.com', password: 'citizen123', role: ROLES.CITIZEN, name: 'Registered Citizen' },
+];
 
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
@@ -15,39 +24,25 @@ export const useAuth = () => useContext(AuthContext);
 const OfficialTamilNaduEmblem = ({ size = 60 }) => (
   <div style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
     <svg width={size} height={size} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Outer Circle Ring */}
       <circle cx="100" cy="100" r="94" fill="#FFFFFF" stroke="#006622" strokeWidth="6" />
       <circle cx="100" cy="100" r="86" fill="none" stroke="#006622" strokeWidth="2" />
-      
-      {/* Tamil Nadu Inscription Header Arc */}
       <text x="100" y="32" fill="#006622" fontSize="16" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
         தமிழ்நாடு அரசு
       </text>
-
-      {/* Srivilliputhur Gopuram Structure */}
       <path d="M72 140 L76 75 L84 55 L92 42 L108 42 L116 55 L124 75 L128 140 Z" fill="#FFA500" stroke="#CC7A00" strokeWidth="2" />
       <rect x="90" y="36" width="20" height="7" fill="#FFA500" stroke="#CC7A00" strokeWidth="1.5" />
-      {/* Kalasam finials */}
       <circle cx="94" cy="32" r="2.5" fill="#CC7A00" />
       <circle cx="100" cy="30" r="3" fill="#CC7A00" />
       <circle cx="106" cy="32" r="2.5" fill="#CC7A00" />
-
-      {/* Gopuram tier lines & detailing */}
       <line x1="75" y1="120" x2="125" y2="120" stroke="#FFFFFF" strokeWidth="2.5" />
       <line x1="78" y1="100" x2="122" y2="100" stroke="#FFFFFF" strokeWidth="2.5" />
       <line x1="82" y1="80" x2="118" y2="80" stroke="#FFFFFF" strokeWidth="2" />
       <line x1="86" y1="62" x2="114" y2="62" stroke="#FFFFFF" strokeWidth="2" />
-
-      {/* Indian Tricolour Base Pedestal */}
       <rect x="65" y="140" width="70" height="7" fill="#FF9933" />
       <rect x="65" y="147" width="70" height="7" fill="#FFFFFF" stroke="#DDD" strokeWidth="0.5" />
       <rect x="65" y="154" width="70" height="7" fill="#128807" />
-
-      {/* Lion Capital of Ashoka Representation */}
       <path d="M92 142 C92 130 96 122 100 122 C104 122 108 130 108 142 Z" fill="#D32F2F" />
       <circle cx="100" cy="150" r="2.5" fill="#000080" />
-
-      {/* Bottom Inscription: 'Vaimaye Vellum' */}
       <text x="100" y="180" fill="#006622" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
         வாய்மையே வெல்லும்
       </text>
@@ -89,6 +84,16 @@ export default function App() {
       budget: '₹11,40,000',
       progress: 100,
       status: 'Approved',
+      photo: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=500&auto=format&fit=crop&q=60',
+      lastUpdated: '2026-08-22',
+    },
+    {
+      id: 4,
+      name: 'Road & Bridge construction  ',
+      village: 'Sattur',
+      budget: '₹25,70,000',
+      progress: 20,
+      status: 'Pending Approval',
       photo: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=500&auto=format&fit=crop&q=60',
       lastUpdated: '2026-08-22',
     },
@@ -147,7 +152,7 @@ export default function App() {
   );
 }
 
-// Government Header with the Single Moving Marquee
+// Government Header with Moving Marquee
 function GovernmentHeader() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -171,7 +176,7 @@ function GovernmentHeader() {
           {user && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
               <div style={{ textAlign: 'right', fontSize: '0.85rem' }}>
-                <div style={{ fontWeight: '600' }}>{user.email}</div>
+                <div style={{ fontWeight: '600' }}>{user.identifier}</div>
                 <span style={{ display: 'inline-block', backgroundColor: '#1D2731', color: '#D9B310', fontSize: '0.75rem', padding: '3px 10px', borderRadius: '10px', marginTop: '3px', fontWeight: 'bold' }}>
                   {user.role.replace('_', ' ')}
                 </span>
@@ -187,7 +192,6 @@ function GovernmentHeader() {
         </div>
       </header>
 
-      {/* SINGLE MOVING MARQUEE DIRECTLY BELOW SMART VILLAGE HEADER */}
       <div style={{ backgroundColor: '#1D2731', color: '#D9B310', padding: '0.4rem 0', fontSize: '0.85rem', fontWeight: '700', letterSpacing: '1.5px', borderBottom: '2px solid #D9B310' }}>
         <marquee behavior="scroll" direction="left" scrollamount="6">
           ★ GOVERNMENT OF TAMIL NADU ★ RURAL DEVELOPMENT & PANCHAYAT RAJ ★ SIVAKASI • THIRUTHANGAL • SATTUR JURISDICTION ★
@@ -203,47 +207,147 @@ const getRedirectPath = (role) => {
   return '/citizen/home';
 };
 
-// Login Page with Static Heading & Full Emblem
+// Login Page with 3 Distinct Role Selection Buttons & Error Validation
 function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  
+  const [selectedRole, setSelectedRole] = useState(ROLES.TALUK_OFFICER);
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState(ROLES.CITIZEN);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e) => {
+  const isOfficer = selectedRole === ROLES.TALUK_OFFICER || selectedRole === ROLES.PANCHAYAT_OFFICER;
+
+  const handleRoleChange = (role) => {
+    setSelectedRole(role);
+    setIdentifier('');
+    setPassword('');
+    setErrorMessage('');
+  };
+
+  const handleAuth = (e) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) return;
+    setErrorMessage('');
 
-    login({ email, role });
-    navigate(getRedirectPath(role));
+    const trimmedId = identifier.trim();
+    const trimmedPass = password.trim();
+
+    // Check credentials against registered database
+    const matchedOfficer = OFFICIAL_USERS.find(
+      (u) => u.identifier.toUpperCase() === trimmedId.toUpperCase() && u.role === selectedRole
+    );
+
+    if (isOfficer) {
+      if (!matchedOfficer) {
+        setErrorMessage(`Invalid Employee ID: "${trimmedId}" is not registered for ${selectedRole.replace('_', ' ')}.`);
+        return;
+      }
+      if (matchedOfficer.password !== trimmedPass) {
+        setErrorMessage('Wrong Password! Please enter the correct password.');
+        return;
+      }
+    } else {
+      // Citizen Authentication
+      if (matchedOfficer && matchedOfficer.password !== trimmedPass) {
+        setErrorMessage('Wrong Password! Please check your credentials.');
+        return;
+      }
+    }
+
+    // Success Authentication
+    login({
+      identifier: trimmedId,
+      role: selectedRole,
+      name: matchedOfficer ? matchedOfficer.name : 'Citizen User',
+    });
+    navigate(getRedirectPath(selectedRole));
   };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 160px)', padding: '2rem 1.5rem' }}>
-      <div style={{ backgroundColor: '#FFFFFF', borderRadius: '10px', borderTop: '6px solid #0B3C5D', boxShadow: '0 8px 30px rgba(0,0,0,0.12)', width: '100%', maxWidth: '520px', padding: '2.8rem 2.5rem' }}>
-        <div style={{ textAlign: 'center', marginBottom: '1.8rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.8rem' }}>
-            <OfficialTamilNaduEmblem size={80} />
+      <div style={{ backgroundColor: '#FFFFFF', borderRadius: '10px', borderTop: '6px solid #0B3C5D', boxShadow: '0 8px 30px rgba(0,0,0,0.12)', width: '100%', maxWidth: '530px', padding: '2.5rem 2.2rem' }}>
+        
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.6rem' }}>
+            <OfficialTamilNaduEmblem size={75} />
           </div>
-          <h2 style={{ color: '#0B3C5D', margin: 0, fontSize: '1.45rem', fontWeight: '800' }}>
+          <h2 style={{ color: '#0B3C5D', margin: 0, fontSize: '1.4rem', fontWeight: '800' }}>
             Village Development Monitoring Portal
           </h2>
-          <div style={{ color: '#0B3C5D', fontWeight: '800', fontSize: '0.85rem', letterSpacing: '1.5px', marginTop: '6px', textTransform: 'uppercase' }}>
+          <div style={{ color: '#0B3C5D', fontWeight: '800', fontSize: '0.82rem', letterSpacing: '1.5px', marginTop: '5px', textTransform: 'uppercase' }}>
             GOVERNMENT OF TAMIL NADU
           </div>
-          <p style={{ color: '#666', fontSize: '0.85rem', margin: '8px 0 0 0' }}>Enter your registered official or citizen credentials</p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        {/* 3 Role Selection Buttons */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <label style={{ ...formLabel, textAlign: 'center', marginBottom: '0.6rem' }}>Select User Portal</label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={() => handleRoleChange(ROLES.TALUK_OFFICER)}
+              style={{
+                ...roleSelectBtn,
+                backgroundColor: selectedRole === ROLES.TALUK_OFFICER ? '#0B3C5D' : '#F1F5F9',
+                color: selectedRole === ROLES.TALUK_OFFICER ? '#FFFFFF' : '#0B3C5D',
+                border: selectedRole === ROLES.TALUK_OFFICER ? '2px solid #0B3C5D' : '1px solid #CBD5E1',
+              }}
+            >
+              Taluk Officer
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleChange(ROLES.PANCHAYAT_OFFICER)}
+              style={{
+                ...roleSelectBtn,
+                backgroundColor: selectedRole === ROLES.PANCHAYAT_OFFICER ? '#0B3C5D' : '#F1F5F9',
+                color: selectedRole === ROLES.PANCHAYAT_OFFICER ? '#FFFFFF' : '#0B3C5D',
+                border: selectedRole === ROLES.PANCHAYAT_OFFICER ? '2px solid #0B3C5D' : '1px solid #CBD5E1',
+              }}
+            >
+              Panchayat Officer
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleChange(ROLES.CITIZEN)}
+              style={{
+                ...roleSelectBtn,
+                backgroundColor: selectedRole === ROLES.CITIZEN ? '#0B3C5D' : '#F1F5F9',
+                color: selectedRole === ROLES.CITIZEN ? '#FFFFFF' : '#0B3C5D',
+                border: selectedRole === ROLES.CITIZEN ? '2px solid #0B3C5D' : '1px solid #CBD5E1',
+              }}
+            >
+              Citizen
+            </button>
+          </div>
+        </div>
+
+        {/* Error Notification Banner */}
+        {errorMessage && (
+          <div style={{ backgroundColor: '#FFEBEE', color: '#C62828', padding: '0.75rem 1rem', borderRadius: '4px', fontSize: '0.85rem', fontWeight: '600', marginBottom: '1.2rem', border: '1px solid #EF9A9A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>⚠</span>
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           <div>
-            <label style={formLabel}>Email Address</label>
+            <label style={formLabel}>
+              {isOfficer ? 'Employee ID (Emp ID)' : 'Email Address'}
+            </label>
             <input
-              type="email"
+              type={isOfficer ? 'text' : 'email'}
               required
-              placeholder="e.g. officer@tn.gov.in or citizen@gmail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder={
+                selectedRole === ROLES.TALUK_OFFICER
+                  ? 'Enter Taluk Emp ID (e.g., TLK101)'
+                  : selectedRole === ROLES.PANCHAYAT_OFFICER
+                  ? 'Enter Panchayat Emp ID (e.g., PNC201)'
+                  : 'Enter your email (e.g., citizen@gmail.com)'
+              }
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               style={formInput}
             />
           </div>
@@ -260,26 +364,21 @@ function LoginPage() {
             />
           </div>
 
-          <div>
-            <label style={formLabel}>Select User Designation</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              style={formInput}
-            >
-              <option value={ROLES.CITIZEN}>Citizen (Public Access, Issues & Feedback)</option>
-              <option value={ROLES.PANCHAYAT_OFFICER}>Panchayat Officer (Update Progress & Fix Issues)</option>
-              <option value={ROLES.TALUK_OFFICER}>Taluk Officer (Project Approvals & Sanctions)</option>
-            </select>
-          </div>
-
           <button
             type="submit"
-            style={{ padding: '0.85rem', backgroundColor: '#0B3C5D', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', marginTop: '0.4rem' }}
+            style={{ padding: '0.85rem', backgroundColor: '#0B3C5D', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.95rem', fontWeight: 'bold', cursor: 'pointer', marginTop: '0.3rem' }}
           >
-            Authenticate & Proceed
+            Authenticate & Proceed as {selectedRole.replace('_', ' ')}
           </button>
         </form>
+
+        {/* Helpful Credential Note for Presentation / Viva */}
+        <div style={{ marginTop: '1.5rem', background: '#F8FAFC', padding: '0.75rem', borderRadius: '6px', fontSize: '0.75rem', color: '#64748B', border: '1px dashed #CBD5E1' }}>
+          <b>Demo Official Access:</b>
+          <br />• Taluk Officer: <code>TLK101</code> / <code>admin123</code>
+          <br />• Panchayat Officer: <code>PNC201</code> / <code>panchayat123</code>
+          <br />• Citizen: <code>citizen@gmail.com</code> / <code>citizen123</code>
+        </div>
       </div>
     </div>
   );
@@ -299,7 +398,7 @@ function CitizenHome() {
     if (!newComplaint.issue.trim()) return;
     const report = {
       id: Date.now(),
-      citizenEmail: user.email,
+      citizenEmail: user.identifier,
       village: newComplaint.village,
       category: newComplaint.category,
       issue: newComplaint.issue,
@@ -316,7 +415,7 @@ function CitizenHome() {
   const handleFeedback = (e) => {
     e.preventDefault();
     if (!newFeedback.comment.trim()) return;
-    setFeedbacks([{ id: Date.now(), ...newFeedback, author: user.email }, ...feedbacks]);
+    setFeedbacks([{ id: Date.now(), ...newFeedback, author: user.identifier }, ...feedbacks]);
     setNewFeedback({ village: 'Sivakasi', rating: 5, comment: '' });
     alert('Thank you for your feedback on village works.');
   };
@@ -634,7 +733,7 @@ function PanchayatOfficerHome() {
                 </div>
               </div>
             ))}
-          </div>
+          </div>npm 
         </div>
 
         {/* Update Projects */}
@@ -707,6 +806,16 @@ const formInput = {
   boxSizing: 'border-box',
   fontSize: '0.9rem',
   backgroundColor: '#FFFFFF',
+};
+
+const roleSelectBtn = {
+  padding: '0.65rem 0.4rem',
+  borderRadius: '6px',
+  fontSize: '0.8rem',
+  fontWeight: '700',
+  cursor: 'pointer',
+  textAlign: 'center',
+  transition: 'all 0.2s ease',
 };
 
 const tabBtn = {
